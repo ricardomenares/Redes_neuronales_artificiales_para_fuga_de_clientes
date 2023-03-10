@@ -1,0 +1,529 @@
+\documentclass{report}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+
+% Títulos automáticos en español
+\usepackage[spanish]{babel}
+
+% Soporte para buenas urls e hipervínculos entre secciones
+\usepackage{hyperref}
+% colores
+\usepackage{xcolor}
+% Citas y referencias en formato APA
+% Si quiere las citas y referencias en IEEE comente esta línea
+\usepackage{apacite}
+
+% Imágenes y figuras
+\usepackage{graphicx}
+
+% Código fuente con números de línea
+\usepackage{listings}
+\renewcommand{\lstlistingname}{Listado en R}
+% Puede cambiar el lenguaje de código fuente
+% https://www.overleaf.com/learn/latex/code_listing#Supported_languages
+\lstset{
+    language=C,
+    basicstyle=\footnotesize,
+    numbers=left,
+    stepnumber=1,
+    showstringspaces=false,
+    tabsize=1,
+    breaklines=true,
+    breakatwhitespace=false,
+}
+
+
+\def \unidad{Instituto de Estadística}
+\def \programa{Ingeniería en Estadística y Ciencia de Datos}
+\def \titulo{Clasificación de la fuga de clientes de una empresa bancaria mediante redes neuronales}
+\vspace{0.3cm}
+\def \autores{
+    Ricardo Cristian Menares Eyzaguirre\\
+}
+\def \fecha{8 de Julio de 2022}
+\def \lugar{
+    Valparaíso, 
+    Chile
+}
+% Inicia el documento 
+\begin{document}
+
+% Inserta la portada del documento
+\input{portada}
+
+\tableofcontents
+\chapter{Introducción}\label{intro}
+Uno de los principales problemas que se enfrentan las empresas es al de fuga de clientes, debido a que
+influye en la pérdida directa de los ingresos de una institución. Además, al momento de reemplazar un cliente
+que se desvinculó de una empresa, hay que invertir en \textit{marketing} para poder atraer nuevos usuarios, por lo
+que es notorio que es más costoso y difícil obtener nuevos clientes que, por el contrario, retener a los clientes
+que podrían irse.\\
+
+Sumado a lo anterior, los clientes resultan ser muy importantes para toda empresa, pues son el principal sustento financiero que posee. En este contexto, uno de los objetivos que debe tener una compañía
+es el de poder conocer a sus clientes y saber evaluar si están
+a gusto con los servicios de la empresa, o más
+específicamente, si estos usuarios pueden abandonar la
+empresa en el futuro. Lo anterior es sumamente importante,
+debido a que, si un usuario abandona la compañía, pierde
+los recursos financieros que obtenía de ese cliente, más aún,
+Miranda  \& et al. (2005) indican que los clientes son uno
+de los activos más importantes para una institución
+financiera, ya que está estrechamente relacionada con las
+utilidades del negocio.\\
+
+``La fuga de clientes busca identificar los clientes con mayor probabilidad de renunciar a un producto, a un conjunto de producto o a la totalidad de los productos ofrecidos por una institución. La acción de evitar que un cliente se fugue es conocida como retención de clientes” (Jélvez, A.\& et al. 2014).\\
+
+En efecto, lo que se busca en este estudio es realizar un análisis de fuga de clientes, para luego poder retener al usuario ofreciéndole ofertas o productos. Es por ello, que los resultados de esta investigación tiene una importancia fundamental para el desarrollo económico y financiero de la empresa.\\
+
+
+
+En este contexto, una empresa del sector bancario le motiva conocer un método eficiente para predecir si un usuario
+potencialmente pueda abandonar la empresa, a modo de
+poder retenerlo antes que efectúe el retiro, ya que resulta ser más costoso conseguir nuevos clientes que retener a los que ya están en la empresa. Así, el objetivo principal de esta investigación es realizar una comparación y elección de los mejores clasificadores mediante redes neuronales artificiales (RNA) con distintas capas y neuronas para identificar y predecir los clientes que abandonan la empresa bancaria, según varias variables importantes que estos usuarios poseen en la empresa, tales como el puntaje crediticio que tiene, años en la empresa, saldo promedio, etc.\\
+
+\section{Objetivo general}\label{objetivo general}
+Ajustar y seleccionar el mejor modelo RNA para la predicción de si un cliente ha abandonado la empresa bancaria o no.
+
+\section{Objetivos específicos}\label{objetivos específicos}
+\begin{enumerate}
+\item Examinar el modelo teórico elegido para los datos obtenidos. 
+\item Comparar experimentalmente diversos modelos RNA para la predicción propuestos.
+\item Elegir el o los mejores modelos de RNA en términos de predicción obtenida.
+\end{enumerate}
+\chapter{Redes neuronales artificiales}
+Antes de describir lo que es una red neuronal artificial, es primordial entender una estructura neuronal real que se compone de un gran cuerpo celular y de fibras nerviosas, la cual a modo resumido se representa por la siguiente imágen:\\
+\begin{figure}[htp]
+        \centering
+    	\includegraphics[scale=0.3]{figuras/rna.png}
+    	\label{fig: Figura1}
+    	\caption{Estructura neuronal, recuperado de: \url{https://comofuncionaque.com/funciones-de-la-neurona/}}
+        \end{figure}\\
+
+En esta imágen, la Dendrita cumple la misión de ser la vía de entrada (receptor) de las señales que se combinan en el cuerpo de la neurona mediante impulsos nerviosos. Luego, el axón es el camino de salida de la señal generada por la neurona. Lo que es el cuerpo amarillo de la imágen, se encuentran muchas vesículas y células que propagan señales electroquímicas de una neurona a otra. Finalmente, la neurona es estimulada por sus entradas y cuando alcanza cierto umbral, se dispara o activa pasando una señal hacia el terminal del axón en donde se conecta con otra neurona.\\
+
+En consiguiente, una red neuronal artificial (RNA) modela la relación entre un conjunto de señales de entrada y una señal de salida usando un modelo derivado desde nuestro entendimiento de cómo funciona un cerebro biológico ante estimulos externos. La forma más común de representar la estructura de una red neuronal es mediante el uso de capas (\textit{layers}), formadas a su vez por neuronas. Cada neurona, realiza una operación sencilla y está conectada a las neuronas de la capa anterior y de la capa siguiente mediante pesos. Una imágen gráfica de una RNA es la siguiente:\\
+
+\begin{figure}[htp]
+        \centering
+    	\includegraphics[scale=0.5]{figuras/rna2.png}
+    	\label{fig: Figura1}
+    	\caption{Estructura red neuronal artificial, recuperado de: \url{https://deingenierias.com/inteligencia-artificial/redes-neuronales-en-inteligencia-artificial/}}
+        \end{figure}\\
+
+En la imágen, se observa que los $X_{i}$ son las señales de entrada que toma esta neurona (los vectores de datos), que se almacenan directamente a una capa de entrada, para luego ir a una primera capa (notar que se mezclan los vectores) en donde se realizan funciones lineales y no lineales mediante pesos a cada observación, pasando de capa en capa conectadas hasta llegar a una capa de salida que entregará el resultado de la interacción de todas las capas del modelo en particular. Notar que en esta imágen es un modelo con 2 capas con 3 neuronas cada una, además de tener una salida binaria (puede ser una salida continua).\\
+
+En consiguiente, se especifica de mejor manera las funciones que se realizan en cada neurona mediante la siguiente imágen:\\
+\vspace{4cm}
+
+\begin{figure}[htp]
+        \centering
+    	\includegraphics[scale=0.5]{figuras/rna3.png}
+    	\label{fig: Figura1}
+    	\caption{Componentes de una neurona artificial (Castillo, 2020).}
+        \end{figure}\\
+
+Se observa que se ocupa un \"bias\" que resulta ser simplemente el sesgo en específico. Para cada entrada se le asigna un peso, para luego realizar una suma ponderada de cada peso por la observación en cuestión. En consiguiente, se realiza una función de activación para esta suma ponderada obteniendo una salida. En este caso, las funciones de activación controlan en gran medida qué información se propaga desde una capa a la siguiente. Estas funciones convierten el valor neto de entrada a la neurona (combinación de los input, pesos y sesgo) en un nuevo valor. Gracias a lo anterior, estos modelos pueden aprender relaciones no lineales. Algunos de las funciones de activación más conocidas (existen muchas) son las siguientes:\\        
+        
+\begin{figure}[htp]
+        \centering
+    	\includegraphics[scale=0.4]{figuras/rna4.png}
+    	\label{fig: Figura1}
+    	\caption{Funciones de activación más conocidas (Castillo, 2020).}
+        \end{figure}\\ 
+        
+Las funciones de activación de cada una, respectivamente son:\\
+
+ \begin{equation}
+            Sigmoide(x)=\frac{1}{1+exp(-x)}
+        \end{equation}\\
+        \begin{equation}
+            TanH(x)=\frac{1-exp(-2x)}{1+exp(-2x)}
+        \end{equation}\\
+        \begin{equation}
+            ReLU(x)=máx(x,0)
+        \end{equation}\\
+        
+Además, se usa bastante Softplus que se considera una función continua y derivable de la función RELU, que tiene la siguiente función de activación:\\
+    \begin{equation}
+        Softplus(x)=log(1+exp(x))
+    \end{equation}
+
+Y gráficamente en comparación con RELU:\\
+
+        \begin{figure}[htp]
+        \centering
+    	\includegraphics[scale=0.4]{figuras/softplus2.png}
+    	\label{fig: Figura1}
+    	\caption{Función de activación Softplus.}
+        \end{figure}\\
+ 
+ Es notorio que es mucho más suave y derivable, por lo cual será la función de activación que se usará en este estudio.\\     
+ Por otro lado, la función de coste es la encargada de cuantificar la distancia entre el valor real y el valor predicho por la red. Cuanto más próximo a cero es el valor de coste, mejor son las predicciones. Las más ocupadas son el error cuadrático medio(ECM) y el error medio absoluto(EMA):\\
+        \begin{equation}
+            ECM=\frac{1}{n}\sum_{i=1}^{n}\left(\hat{y}_{i}-y_{i} \right)^{2}
+        \end{equation}
+        \begin{equation}
+            EMA=\frac{1}{n}\sum_{i=1}^{n}|\hat{y}_{i}-y_{i}|
+        \end{equation}     
+        
+
+Para terminar, se detalla cada paso que se debería realizar para hacer una red neuronal artificial:\\
+        
+\begin{enumerate}
+        \item Iniciar la red con valores aleatorios de los pesos y sesgo.
+        
+        \item Promediar los errores de cada observación de entrenamiento al hacer su predicción.
+        
+        \item Identificar la responsabilidad que ha tenido cada peso y sesgo en el error de las predicciones.
+        
+        \item Modificar ligeramente los pesos y sesgos de la red (de forma proporcional a su
+        responsabilidad en el error) en la dirección correcta para que se reduzca el error.
+        
+        \item  Repetir los pasos 2, 3, 4 y 5 hasta que la red sea suficientemente buena.
+    \end{enumerate}        
+
+\chapter{Metodología}\label{Metodología}
+\section{Base de datos}
+ La base de datos a usar en esta investigación cuenta con:\\
+        \begin{itemize}
+            \item 10.000 observaciones.
+            \item 14 variables.
+        \end{itemize}\\
+        
+En donde, las variables detalladamente son:\\
+        \begin{enumerate}
+            \item \textbf{RowNumber}: enumeración del cliente 1-10.000.
+            \item \textbf{CustomerId}: Id del cliente.
+            \item \textbf{SurName}: Apellido del cliente.
+            \item \textbf{CreditScore}: Puntaje crediticio de varios ítems.
+            \item \textbf{Geography}: País de residencia. (Francia-España-Alemania).
+            \item \textbf{Gender}: Género.Mujer-Hombre.
+            \item \textbf{Age}: Edad.
+            \item \textbf{Tenure}: Años en la empresa. 0-8.
+            \item \textbf{Balance}: Saldo promedio.
+            \item \textbf{NumOfProducts}: N° de productos asociados a la empresa.
+            \item \textbf{HasCrCard}: Cliente tiene tarjeta de crédito. 0-1.
+            \item \textbf{IsActiveMember}: Cliente tiene cuenta activa. 0-1.
+            \item \textbf{EstimatedSalary}:Salario estimado en dólares estadounidenses.
+            \item \textbf{Exited}: Cliente se desvinculó del banco.0-1.
+        \end{enumerate}
+\newpage
+\section{Análisis de datos}
+Se comienza buscando si existen anomalías en los datos, donde se concluye que la base de datos no cuenta con valores NaN y son los datos concordantes a sus variables.\\
+
+Además, debido a la nula información que aportan para el análisis de fuga, se eliminan las 3 primeras variables:\\
+        \begin{enumerate}
+            \item RowNumber
+            \item CustomerId
+            \item SurName
+        \end{enumerate}\\
+Mediante el siguiente código en R:
+
+\begin{lstlisting}[Language=R, caption={Eliminación de variables que no aportan información relevante},captionpos=b]
+df<-df[-c(1,2,3)]
+dim(df) #se comprueban las dimensiones resultantes
+\end{lstlisting}\\
+
+
+En consiguiente, se visualizan gráficos de las variables de interés. Comenzando por la proporción del sexo de los clientes:\\
+
+ \begin{figure}[htp]
+        \centering
+    	\includegraphics[scale=0.25]{figuras/analisis2.png}
+    	\label{fig: Figura1}
+    	\caption{Gráfico de torta de la proporción del sexo de los clientes}
+        \end{figure}\\
+
+Se aprecia que es casi etiquetativa esta proporción, lo cual es bueno. Ahora se presenta la proporción de clientes con tarjeta de crédito:\\
+\vspace{4cm}
+
+\begin{figure}[htp]
+        \centering
+    	\includegraphics[scale=0.25]{figuras/analisis3.png}
+    	\label{fig: Figura1}
+    	\caption{Gráfico de torta de la proporción de clientes con tarjeta de crédito}
+        \end{figure}\\
+
+Es notorio que existe un desbalance de clientes con tarjetas de crédito y los que no, lo cual puede afectar a los resultados del análisis de clasificación, pues que el cliente tenga tarjeta de crédito o no puede ser un motivo importante para que decida abandonar la empresa. En consiguiente, se presenta la proporciónd e clientes activos y los que no:\\
+
+\begin{figure}[htp]
+        \centering
+    	\includegraphics[scale=0.25]{figuras/analisis4.png}
+    	\label{fig: Figura1}
+    	\caption{Gráfico de torta de la proporción de clientes activos}
+        \end{figure}\\
+
+Acá si existe una proporción casi del 50\% para cada uno, lo cual es bastante bueno. Ahora se presenta la proporción de clientes que abandonan la empresa:\\
+\vspace{6cm}
+
+\begin{figure}[htp]
+        \centering
+    	\includegraphics[scale=0.3]{figuras/analisis5.png}
+    	\label{fig: Figura1}
+    	\caption{Gráfico de torta de la proporción de clientes que abandonan la empresa}
+        \end{figure}\\
+Es muy evidente que existe una desproporción entre los clientes que abandonan la empresa o no, por lo cual esto puede afectar directamente a los resultados de la clasificación, pues esta variable es la que interesa clasificar. Habrá que tener cuidado con los resultados de este estudio.\\
+
+Luego, se realizan gráficos de barra para las variables cualitativas con más de 2 categorías, presentando primero las frecuencias de la nacionalidad del cliente, cantidad de productos que tiene el cliente y los años de antigüedad:\\
+\vspace{10cm}
+
+\begin{figure}[htp]
+        \centering
+    	\includegraphics[scale=0.25]{figuras/analisis6.png}
+    	\label{fig: Figura1}
+    	\caption{Gráficos de barras de las frecuencias de nacionalidad-cantidad de productos-antigüedad del cliente}
+        \end{figure}\\
+
+Se aprecia que aproximadamente la mitad de los clientes tienen nacionalidad francesa y en cuanto a alemanes y españoles son equitativos. Luego, se observa que la mayoría de clientes tienen 1 o 2 productos solamente, siendo la proporción de tener más que dos productos muy baja. Por último, los años de antigüedad del cliente es bastante equitativo, a excepción de cuando tiene 0 o 10 años de antigüedad.\\
+
+Ahora, se presenta un histograma y un Box-Plot del balance del cliente:\\
+
+\begin{figure}[htp]
+        \centering
+    	\includegraphics[scale=0.25]{figuras/analisis7.png}
+    	\label{fig: Figura1}
+    	\caption{Histograma y Box-Plot del balance del cliente}
+        \end{figure}\\
+
+Es notorio que tiene muchos valores cercanos a 0, lo cual puede intuirse un problema de colas. También se observa un comportamiento asimétrico positivo, lo cual se explica por la cantidad de valores cercanos a 0.\\
+
+Se realiza el mismo gráfico anterior pero ahora con la variable de salario estimado:\\
+
+\begin{figure}[htp]
+        \centering
+    	\includegraphics[scale=0.25]{figuras/analisis8.png}
+    	\label{fig: Figura1}
+    	\caption{Histograma y Box-Plot del salario estimado del cliente}
+        \end{figure}\\
+        
+Se observa un comportamiento bastante equitativo, parecido al de una distribución uniforme continua. Según el Box-Plot, se observa un comportamiento simétrico\\
+
+Ahora se presenta el puntaje de crédito del cliente:\\
+
+\begin{figure}[htp]
+        \centering
+    	\includegraphics[scale=0.25]{figuras/analisis10.png}
+    	\label{fig: Figura1}
+    	\caption{Histograma y Box-Plot del puntaje de crédito del cliente}
+        \end{figure}\\
+
+Se observa un comportamiento simétrico y con forma de campana. Además, se aprecian valores atípicos cuando este puntaje es menor a 350 apróx. Como no son tantos, se decide reemplazar estos valores atípicos por la media de la variable, quedando el siguiente gráfico:\\
+
+\begin{figure}[htp]
+        \centering
+    	\includegraphics[scale=0.25]{figuras/analisis11.png}
+    	\label{fig: Figura1}
+    	\caption{Histograma y Box-Plot del puntaje de crédito del cliente}
+        \end{figure}\\
+
+Como se aprecia en la figura 3.9, no varío notoriamente la distribución de los datos.\\
+
+Finalizando, se presenta el histograma de la edad del cliente:\\
+
+        \begin{figure}[htp]
+        \centering
+    	\includegraphics[scale=0.25]{figuras/analisis12.png}
+    	\label{fig: Figura1}
+    	\caption{Histograma de la edad del cliente}
+        \end{figure}\\
+
+Se aprecia que en la variable de respuesta se tiene un comportamiento de decaimiento, concentrándose mayormente en clientes entre 30 y 50 años de edad apróx. Se observa que hay clientes bastantes viejos.\\
+
+Para terminar, se presenta un gráfico de correlación para las variables cuantitativas, a modo de poder entender si existen problemas de multicolinealidad entre ellas:\\
+\begin{figure}[htp]
+        \centering
+    	\includegraphics[scale=0.25]{figuras/cor1.png}
+    	\label{fig: Figura1}
+    	\caption{Matriz de correlaciones para las variables continuas}
+        \end{figure}\\      
+
+Se observa que las correlaciones entre las variables son muy cercanas a 0, por tanto, no ocurre el problema de que 2 o más variables estén entregando la misma información para la variable de respuesta, lo cual es bastante bueno.\\
+
+\newpage
+\section{Preprocesamiento de variables para RNA}
+A la hora de entrenar modelos basados en redes neuronales, es necesario aplicar a los datos, al menos, dos tipos de transformaciones:
+        \begin{enumerate}
+            \item \textbf{Binarización de variables categóricas}: crear nuevas variables dummy con cada uno de los niveles de las variables cualitativas.
+            \item \textbf{Estandarización y escalado de variables numéricas}:  generalmente centrar los datos y estandarizar entre 0 y 1.
+        \end{enumerate}\\
+Entonces, para las variables categóricas se dividen en varias variables dummys, estas variables son: Geography, NumOfProducts. Se realiza mediante:\\
+
+\begin{lstlisting}[Language=R, caption={Creación de variables dummys},captionpos=b]
+dummys<-dummy_cols(df,  select_columns = c(``Geography", ``NumOfProducts"))
+names(dummys[12:18])
+\end{lstlisting}\\
+        
+Mientras que para las variables binarias no se les realiza nada. Estas variables son: Gender, HasCrCard, IsActivedMember y Exited.\\
+        
+Por último, solo a las variables CreditScore, Age, Tenure, Balance y EstimatedSalary que son cuantitativas, se realiza un escalamiento estándar que ajusta los valores medidos en diferentes escalas respecto a una escala común. Básicamente, centra los datos en torno al 0 y su varianza la convierte en 1. Así, su fórmula es bastante simple, siendo:\\
+\begin{equation}
+    X_{esc}= \frac{X_{ip}-\bar{X_{p}}}{S_{x_{p}}}
+\end{equation}
+
+En R la función scale(x) realiza el escalamiento estándar a cada variable, realizando el siguiente código:\\
+
+\begin{lstlisting}[Language=R, caption={Escalamiento estándar de variables cuantitativas},captionpos=b]
+scale<-scale(df[c(1,4,5,6,10)]) #todas las variables numéricas
+\end{lstlisting}\\
+
+Luego de realizar el escalamiento a los datos mediante la función de R scale(), se obtuvieron las siguientes medias y varianzas de cada variable:\\
+\vspace{7cm}
+
+\begin{table}[h!]
+\begin{center}   
+    \label{tab:table1}
+    \begin{tabular}{|c|c|c|}
+\hline
+\textbf{Variable} & \textbf{Media} &\textbf{Varianza}\\
+\hline
+CreditScore &   0 &1  \\
+\hline
+Age &   0 &1  \\
+\hline
+Tenure &   0 &1  \\
+\hline
+Balance &   0 &1  \\
+\hline
+Estimated Salary &   0 &1  \\
+\hline
+   \end{tabular}
+  \end{center}
+  \caption{Media y varianza de variables cuantitativas luego del escalamiento. Elaboración propia.}
+\end{table}\\
+
+Se confirma en la tabla 3.1 las medias y varianzas que quedaron en las variables cuantitativas luego del escalamiento estándar.\\
+
+\newpage
+\newpage
+\section{Entrenamiento y prueba}
+Se procede a separar el conjunto de datos en dos grupos, entrenamiento y prueba. Con el primero, se entrenará los distintos modelos ANN y con el segundo se chequeará el poder predictivo que el modelo tenga. Se realiza con:\\
+
+\begin{lstlisting}[Language=R, caption={Separación en entrenamiento y prueba},captionpos=b]
+train <- createDataPartition(y = df2$Exited, p = 0.8, list = FALSE, times = 1)
+df_train <- df2[train, ] 
+df_test  <- df2[-train, ]
+
+prop.table(table(df_train$Exited))
+prop.table(table(df_test$Exited))
+\end{lstlisting}\\
+
+\chapter{Resultados}
+\section{Ajuste modelos RNA}
+Se presenta el gráfico del ajuste del modelo RNA con 1 capa y 1 neurona:\\
+\begin{figure}[htp]
+        \centering
+    	\includegraphics[scale=0.27]{figuras/ann1.png}
+    	\label{fig: Figura1}
+    	\caption{Modelo ANN con 1 capa y 1 neurona}
+        \end{figure}\\
+        
+Ahora el modelo RNA con 1 capa y 2 neuronas:\\
+\vspace{3cm}
+
+\begin{figure}[htp]
+        \centering
+    	\includegraphics[scale=0.25]{figuras/ann2.png}
+    	\label{fig: Figura1}
+    	\caption{ANN de modelo con 2 capas y función de activación Softplus}
+        \end{figure}\\        
+
+En consiguiente, el modelo RNA con 2 capas y 2x3 neuronas:\\
+
+\begin{figure}[htp]
+        \centering
+    	\includegraphics[scale=0.25]{figuras/ann4.png}
+    	\label{fig: Figura1}
+    	\caption{ANN de modelo con 2 capas y 2x3 neuronas con función de activación Softplus}
+        \end{figure}\\
+
+Ahora, el modelo con 3 capas y 2x2x2 neuronas:\\
+\vspace{3cm}
+
+\begin{figure}[htp]
+        \centering
+    	\includegraphics[scale=0.2]{figuras/ann55.png}
+    	\label{fig: Figura1}
+    	\caption{ANN de modelo con 3 capas y 2x2x2 neuronas con función de activación Softplus}
+        \end{figure}\\
+
+Por último, el modelo con 3 capas y 4x2x3 neuronas:\\
+
+\begin{figure}[htp]
+        \centering
+    	\includegraphics[scale=0.25]{figuras/ann6.png}
+    	\label{fig: Figura1}
+    	\caption{ANN de modelo con 2 capas y 2x3 neuronas con función de activación Softplus}
+        \end{figure}\\
+\newpage
+\section{Métricas de desempeño}
+Se presenta el accuracy y el error cuadrático medio de cada modelo propuesto:\\
+
+\begin{table}[h!]
+  \begin{center}
+    \label{tab:table1}
+    \begin{tabular}{|l|c|c|} 
+    \hline
+      \textbf{Modelo RNA} & \textbf{Accuracy} & \textbf{ECM}\\
+      \hline
+      RNA 1 capa y 1 neurona & 0.849 & 0.151 \\
+      \hline 
+      RNA 1 capa y 2 neuronas &  0.857 & 0.143\\
+      \hline
+      RNA 1 capa y 3 neuronas & 0.8525 & 0.1475 \\
+      \hline
+      RNA 2 capas y 2x3 neuronas & 0.859 & 0.141 \\
+      \hline
+      RNA 3 capas y 2x2x2 neuronas & 0.874 & 0.126 \\
+      \hline
+      RNA 3 capas y 4x2x3 neuronas & 0.914 & 0.086\\
+      \hline
+    \end{tabular}
+  \end{center}
+  \caption{Accuracy y ECM de cada modelo RNA}
+\end{table}\\
+
+Todos tuvieron buenas métricas de desempeño, en donde el modelo que más destaca es el RNA con 3 capas y 4x2x3 neuronas.\\
+
+\chapter{Conclusiones}
+Es notorio que al aumentar el número de capas, el accuracy fue aumentando. En consiguiente, el modelo mejor evaluado fue el RNA con 3 capas y 4x2x3 neuronas, por lo que el modelo escogido para poder clasificar la fuga de clientes de la empresa es este.\\
+
+Cabe destacar, que existen otras técnicas de clasificación potentes que se pudieron agregar en este trabajo, tales como Random Forest, Gradient Boosting, XGBoost o SVM.\\
+
+Finalizando, se destaca que a pesar de que RNA es una técnica para poder clasificar y/o predecir bastante buena, en esta se pierde capacidad de interpretación en sus resultados, debido a la gran cantidad de parámetros que se estiman, además de los distintos cálculos que se realizan. En ocasiones donde solo importa el nivel predictivo y no su interpretación, se podría recomendar probar estas técnicas para el análisis.\\
+
+\chapter{Referencias}\label{Referencias}
+% Estilo de bibliografía APA
+% Si quiere usar el estilo IEEE comente esta línea
+
+
+% Descomente esta línea para usar el estilo de bibliografía IEEE
+%\bibliographystyle{ieeetr}
+\bibliography{referencias}
+\begin{itemize}
+\item Alex. (2019). Redes neuronales en inteligencia artificial. \textit{De ingenierías}. 
+[\textcolor{blue}{\href{https://deingenierias.com/inteligencia-artificial/redes-neuronales-en-inteligencia-artificial/}{Ver aquí}}]
+\vspace{0.4cm}
+
+\item Castillo, L. (2020). Redes neuronales.\textit{ Cinvestav}. 
+[\textcolor{blue}{\href{https://rstudio-pubs-static.s3.amazonaws.com/599210_4306c5d3d6a34a6c829566ca11b7e27a.html#1}{Ver aquí}}]
+\vspace{0.4cm}
+
+\item Graña, R. (2015). Funciones de la neurona. \textit{cómofuncionaqué}.
+[\textcolor{blue}{\href{https://comofuncionaque.com/funciones-de-la-neurona/}{Ver aquí}}]
+\vspace{0.4cm}
+
+\item Guadarrama, E. \& et al. (2015). Marketing relacional: valor, satisfacción, lealtad y retención del cliente. Análisis y reflexión teórica.\textit{ Ciencia y Sociedad, 40(2), pp. 307-340.}
+[\textcolor{blue}{\href{https://www.redalyc.org/pdf/870/87041161004.pdf}{Ver aquí}}]
+\vspace{0.4cm}
+
+\item Jélvez, A. \& et al. (2014). Modelo predictivo de fuga de clientes utilizando minería de datos para una empresa de telecomunicaciones en Chile. \textit{Universidad, Ciencia y Tecnología, 18(72), pp. 100-109.}
+[\textcolor{blue}{\href{http://ve.scielo.org/scielo.php?script=sci_arttext&pid=S1316-48212014000300004}{Ver aquí}}]
+\vspace{0.4cm}
+
+\item Latz, B. (2019). Machine Learning with R: Expert techniques for predictive modeling. 3ed. Birmingham: Packt.
+[\textcolor{blue}{\href{https://www.amazon.com/-/es/Brett-Lantz/dp/1788295862}{Ver aquí}}]
+\vspace{0.4cm}
+
+\end{itemize}
+
+\end{document}
